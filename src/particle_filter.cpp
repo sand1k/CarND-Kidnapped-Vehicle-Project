@@ -110,9 +110,9 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     for (unsigned int o = 0; o < observations.size(); o++) {
       // Convert osbservation coordinates from vehicles' coordinates to global maps' coordinates
       double x_map = particles[i].x + (cos(particles[i].theta) * observations[o].x) -
-      (sin(particles[i].theta) * observations[o].y);
+                     (sin(particles[i].theta) * observations[o].y);
       double y_map = particles[i].y + (sin(particles[i].theta) * observations[o].x) +
-      (cos(particles[i].theta) * observations[o].y);
+                     (cos(particles[i].theta) * observations[o].y);
 
       // Find closest landmark
       double min_dist = std::numeric_limits<double>::infinity();
@@ -138,11 +138,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                                            map_landmarks.landmark_list[predicted_landmark_index].x_f,
                                            map_landmarks.landmark_list[predicted_landmark_index].y_f);
       }
-      else {
-        particles[i].weight = 0.0;
-      }
     }
-    weights[i] = particles[i].weight;
+    if (particles[i].associations.size() > 0) {
+      weights[i] = particles[i].weight;
+    }
+    else {
+      weights[i] = 0.0;
+    }
   }
 }
 
